@@ -39,4 +39,15 @@ interface TrailDao {
 
     @Query("DELETE FROM trails WHERE id = :id")
     suspend fun deleteById(id: String)
+
+    // LAB 2 : import qui n'écrase jamais un sentier déjà présent (même id).
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(trails: List<TrailEntity>)
+
+    // LAB 2 : marqueur d'import, indépendant du nombre de sentiers.
+    @Query("SELECT EXISTS(SELECT 1 FROM seed_markers WHERE `key` = :key)")
+    suspend fun wasSeeded(key: String): Boolean
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun putSeedMarker(marker: SeedMarker)
 }
