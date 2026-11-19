@@ -13,6 +13,23 @@ class TrailFormatterTest {
         } finally { Locale.setDefault(previous) }
     }
 
+    @Test fun zeroDistanceIsFormattedInBothUnits() {
+        val previous = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.US)
+            assertEquals("0.0 km", TrailFormatter.distance(0.0, DistanceUnit.KM))
+            assertEquals("0.0 mi", TrailFormatter.distance(0.0, DistanceUnit.MI))
+        } finally { Locale.setDefault(previous) }
+    }
+
+    @Test fun milesAreRoundedToOneDecimal() {
+        val previous = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.US)
+            assertEquals("4.7 mi", TrailFormatter.distance(7.5, DistanceUnit.MI))   // 7.5 × 0.621371 = 4.66
+        } finally { Locale.setDefault(previous) }
+    }
+
     @Test fun milesConversionUsesCorrectFactor() {
         val previous = Locale.getDefault()
         try {
